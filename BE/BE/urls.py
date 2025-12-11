@@ -3,5 +3,5 @@ from django.urls import path,include
 
 
 urlpatterns = [
-    path('sil/', include('ProductRegistration.urls')),
+    path('products/', include('ProductRegistration.urls')),
 ]
