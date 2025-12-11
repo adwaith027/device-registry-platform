@@ -1,0 +1,64 @@
+/* STATUS BUTTONS - Container */
+.status-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* STATUS BUTTON - Base styles */
+.status-buttons__btn {
+  border: none;
+  padding: 0.35rem 0.75rem;
+  border-radius: 0.2rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  color: white;
+  transition: all 0.2s ease-in-out;
+  background-color: #6c757d;
+  flex: 1;
+  white-space: nowrap;
+}
+
+.status-buttons__btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.status-buttons__btn:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+/* APPROVE BUTTON */
+.status-buttons__btn--approve {
+  background-color: #6c757d;
+}
+
+/* ALLOCATE BUTTON */
+.status-buttons__btn--allocate {
+  background-color: #6c757d;
+}
+
+/* ACTIVE STATE (Both buttons when active) */
+.status-buttons__btn--active {
+  background-color: #28a745;
+  box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+}
+
+/* MOBILE STYLES */
+@media (max-width: 576px) {
+  .status-buttons {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .status-buttons__btn {
+    width: 100%;
+    padding: 0.6rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .status-buttons__btn {
+    padding: 0.7rem;
+  }
+}

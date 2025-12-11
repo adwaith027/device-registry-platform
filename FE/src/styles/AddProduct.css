@@ -1,0 +1,133 @@
+/* ADD PRODUCT PAGE - Main container */
+.add-product-page {
+    max-width: 100%;
+}
+
+/* PAGE HEADER */
+.add-product-page__header {
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.add-product-page__title {
+    font-size: 1.8rem;
+    font-weight: 500;
+    color: #333;
+    margin: 0;
+}
+
+/* PRODUCT CARD - Form container */
+.add-product-card {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 1.5rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 0.5rem;
+    background-color: white;
+}
+
+/* ADD PRODUCT FORM */
+.add-product-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.add-product-form__field {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1.25rem;
+}
+
+.add-product-form__label {
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #333;
+}
+
+.add-product-form__input {
+    padding: 0.625rem 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 0.25rem;
+    font-size: 1rem;
+    transition: border-color 0.15s ease-in-out;
+    box-sizing: border-box;
+}
+
+.add-product-form__input:focus {
+    border-color: #4CAF50;
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.25);
+}
+
+.add-product-form__input::placeholder {
+    color: #999;
+}
+
+.add-product-form__submit {
+    padding: 0.75rem 1.5rem;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 0.25rem;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-top: 0.5rem;
+}
+
+.add-product-form__submit:hover {
+    background-color: #45a049;
+}
+
+/* MOBILE STYLES */
+@media (max-width: 768px) {
+    .add-product-page__header {
+        margin-bottom: 1rem;
+    }
+
+    .add-product-page__title {
+        font-size: 1.5rem;
+    }
+
+    .add-product-card {
+        padding: 1.25rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .add-product-form__field {
+        margin-bottom: 1rem;
+    }
+
+    .add-product-form__input {
+        padding: 0.75rem;
+        font-size: 16px; /* Prevents iOS zoom */
+    }
+
+    .add-product-form__submit {
+        width: 100%;
+        padding: 0.875rem;
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .add-product-page__title {
+        font-size: 1.3rem;
+    }
+
+    .add-product-card {
+        padding: 1rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .add-product-form__label {
+        font-size: 0.9rem;
+    }
+
+    .add-product-form__input {
+        padding: 0.8rem;
+    }
+}

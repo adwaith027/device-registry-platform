@@ -1,0 +1,284 @@
+/* SERIAL PAGE - Main container */
+.serial-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* SERIAL PAGE HEADER */
+.serial-page__header {
+  margin: 0;
+  padding: 0;
+}
+
+.serial-page__title {
+  font-size: 1.8rem;
+  font-weight: 500;
+  color: #333;
+  margin: 0;
+}
+
+/* SERIAL PANEL (Card Style) */
+.serial-panel {
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0.13), 0 1px 3px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+}
+
+.serial-panel__header {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+  background-color: #fff;
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+}
+
+.serial-panel__title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.serial-panel__body {
+  padding: 1.25rem;
+  flex: 1;
+}
+
+.serial-panel__footer {
+  padding: 0.75rem 1.25rem;
+  background-color: rgba(0, 0, 0, 0.03);
+  border-top: 1px solid rgba(0, 0, 0, 0.125);
+  border-bottom-left-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+  text-align: right;
+}
+
+.serial-panel__count {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+/* SERIAL FORM */
+.serial-form {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  align-items: center;
+}
+
+.serial-form__field {
+  flex: 1;
+  min-width: 300px;
+}
+
+.serial-form__input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease-in-out;
+}
+
+.serial-form__input:focus {
+  border-color: #80bdff;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.serial-form__actions {
+  flex-shrink: 0;
+}
+
+.serial-form__submit {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 0.55rem 1rem;
+  font-size: 1rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  white-space: nowrap;
+}
+
+.serial-form__submit:hover {
+  background-color: #0069d9;
+}
+
+/* SERIAL TABLE WRAPPER (for mobile scroll) */
+.serial-table-wrapper {
+  overflow-x: auto;
+}
+
+/* SERIAL TABLE */
+.serial-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 0;
+  min-width: 600px;
+}
+
+.serial-table__head {
+  background-color: #f8f9fa;
+}
+
+.serial-table__row {
+  border-top: 1px solid #dee2e6;
+}
+
+.serial-table__row--empty {
+  text-align: center;
+  color: #999;
+  font-style: italic;
+}
+
+.serial-table__header {
+  padding: 0.75rem;
+  vertical-align: middle;
+  border-bottom: 2px solid #dee2e6;
+  border-top: none;
+  font-weight: 600;
+  color: #495057;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.serial-table__header--index {
+  width: 5%;
+}
+
+.serial-table__cell {
+  padding: 0.75rem;
+  vertical-align: middle;
+  border-top: 1px solid #dee2e6;
+  text-align: left;
+}
+
+.serial-table__cell--serial {
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+  color: #333;
+}
+
+/* TABLE ACTIONS */
+.serial-table__actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.serial-table__btn {
+  border: none;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.875rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+}
+
+.serial-table__btn:hover {
+  opacity: 0.9;
+}
+
+.serial-table__btn--delete {
+  background-color: #dc3545;
+  color: white;
+}
+
+.serial-table__btn--approved {
+  background-color: #28a745;
+  color: white;
+  cursor: not-allowed;
+}
+
+.serial-table__btn--allocated {
+  background-color: #28a745;
+  color: white;
+  cursor: not-allowed;
+}
+
+.serial-table__btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* MOBILE STYLES */
+@media (max-width: 768px) {
+  .serial-page {
+    gap: 1rem;
+  }
+
+  .serial-page__title {
+    font-size: 1.5rem;
+  }
+
+  .serial-panel__header,
+  .serial-panel__body,
+  .serial-panel__footer {
+    padding: 1rem;
+  }
+
+  .serial-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .serial-form__field {
+    min-width: 0;
+  }
+
+  .serial-form__input {
+    font-size: 16px; /* Prevents iOS zoom */
+  }
+
+  .serial-form__submit {
+    width: 100%;
+    padding: 0.8rem;
+  }
+
+  .serial-table {
+    font-size: 0.9rem;
+  }
+
+  .serial-table__actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .serial-table__btn--delete {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .serial-page__title {
+    font-size: 1.3rem;
+  }
+
+  .serial-panel {
+    border-radius: 0.25rem;
+  }
+
+  .serial-table {
+    font-size: 0.85rem;
+    min-width: 550px;
+  }
+
+  .serial-table__header,
+  .serial-table__cell {
+    padding: 0.6rem;
+  }
+}

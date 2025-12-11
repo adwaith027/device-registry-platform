@@ -1,0 +1,14 @@
+# Environment variables
+.env
+*.env
+
+# Python venv
+venv/
+*.pyc
+
+# Django stuff
+__pycache__/
+db.sqlite3
+
+# Node stuff (for FE)
+FE/node_modules/
