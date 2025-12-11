@@ -58,14 +58,16 @@ project-root/
   - Approve serial numbers
   - Allocate serial numbers
   - Delete unapproved/unallocated serial numbers
-- ✅ Device-Customer Mapping page
-  - View existing mappings
-  - Add new customer-device mappings
+- ✅ Device-Customer Mapping page (UI only)
+  - View existing mappings interface
+  - Add new customer-device mappings interface
+  - Backend integration pending
 - ✅ Login page UI
 - ✅ Backend API endpoints under `/products/`
 - ✅ CORS configured for local development
 
 ### Pending
+- ⏳ Device-Customer Mapping backend functionality
 - ⏳ Login authentication functionality
 - ⏳ User role-based access control
 
@@ -75,7 +77,7 @@ project-root/
 
 ### Prerequisites
 - Python 3.8+
-- Node.js 16+
+- Node.js 22+
 - MariaDB
 
 ### 1. Clone the Repository
@@ -94,6 +96,11 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
 
 #### b. Install Dependencies
+```bash
+pip install django djangorestframework django-cors-headers mysqlclient django-environ
+```
+
+**Note:** A `requirements.txt` file is provided in the `BE/` directory for easier installation:
 ```bash
 pip install -r requirements.txt
 ```
@@ -182,8 +189,8 @@ Base URL: `http://127.0.0.1:8001/products/`
    - Delete unapproved and unallocated serial numbers
 
 2. **Device-Customer Mapping Page**
-   - View existing device-to-customer mappings
-   - Add new mappings between customers and devices
+   - View existing device-to-customer mappings (UI only, backend pending)
+   - Add new mappings between customers and devices (UI only, backend pending)
 
 3. **Login Page**
    - User authentication interface (authentication logic not yet implemented)
@@ -208,6 +215,7 @@ Base URL: `http://127.0.0.1:8001/products/`
 
 ## Known Issues
 
+- Mapping Device to customers not yet implemented
 - Login authentication not yet implemented
 - No user role-based access control yet
 
