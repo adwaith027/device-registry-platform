@@ -1,6 +1,7 @@
-import { useState } from 'react'
-import { NavLink } from 'react-router-dom'
 import '../styles/Sidebar.css'
+import { useState } from 'react'
+import { NavLink, useNavigate } from 'react-router-dom'
+import api, { BASE_URL } from '../assets/js/axiosConfig';
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false)
@@ -11,6 +12,21 @@ export default function Sidebar() {
 
   const closeSidebar = () => {
     setIsOpen(false)
+  }
+
+  const navigate=useNavigate();
+  const handleLogout = async () => {
+    try {
+      await api.post(`${BASE_URL}/logout/`)
+      localStorage.removeItem('user')
+      closeSidebar()
+      navigate('/login')
+    } catch (err) {
+      console.error('Logout error:', err)
+      localStorage.removeItem('user')
+      closeSidebar()
+      navigate('/login')
+    }
   }
 
   return (
@@ -80,13 +96,11 @@ export default function Sidebar() {
 
             <div className="sidebar__menu-bottom">
               <li className="sidebar__menu-item">
-                <NavLink
-                  to="/login"
-                  className="sidebar__link sidebar__link--logout"
-                  onClick={closeSidebar}
-                >
+                <button
+                  onClick={handleLogout}
+                  className="sidebar__link sidebar__link--logout">
                   Logout
-                </NavLink>
+                </button>
               </li>
             </div>
           </ul>
