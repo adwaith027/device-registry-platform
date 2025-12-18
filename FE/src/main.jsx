@@ -1,40 +1,50 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { createBrowserRouter, RouterProvider,Navigate } from 'react-router-dom'
 
 import './styles/base.css'
 
 import Home from './pages/Home.jsx'
 import LoginPage from './pages/LoginPage.jsx'
 import ListingPage from './pages/ListingPage.jsx'
-import AddProduct from './pages/AddProduct.jsx'
 import Layout from './pages/Layout.jsx' 
 import AddSerialNum from './pages/AddSerialNum.jsx'
+import SignupPage from './pages/SignupPage.jsx'
+import ProtectedRoute from './components/ProtectedRoute';
 
 const router = createBrowserRouter([
   {
-    path: '/login',
-    element: <LoginPage />
+    path:'/',
+    element:<Navigate to="/login" replace />
+  },
+  {
+    path: '/signup',
+    element: <SignupPage />
   },  
   {
-    path: '/dashboard',
-    element: <Layout />,             
-    children: [
+    path: '/login',
+    element: <LoginPage />
+  }, 
+  {
+    element:<ProtectedRoute/>,
+    children:[
       {
-        path: '',
-        element: <Home />
-      },
-      {
-        path: 'listing-page',
-        element: <ListingPage />
-      },
-      // {
-      //   path: 'add-product',
-      //   element: <AddProduct />
-      // },
-      {
-        path: 'add-serialnum',
-        element: <AddSerialNum />
+        path: '/dashboard',
+        element: <Layout />,             
+        children: [
+          {
+            path: '',
+            element: <Home />
+          },
+          {
+            path: 'listing-page',
+            element: <ListingPage />
+          },
+          {
+            path: 'add-serialnum',
+            element: <AddSerialNum />
+          }
+        ]
       }
     ]
   }
