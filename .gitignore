@@ -13,5 +13,5 @@ db.sqlite3
 # Node stuff (for FE)
 FE/node_modules/
 
-#node version mgt
+# node version switcher
 .nvmrc
