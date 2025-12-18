@@ -114,6 +114,32 @@
   background-color: #0056b3;
 }
 
+
+
+.login-form__error {
+  color: #e74c3c;
+  background-color: #fadbd8;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+
+.login-form__footer {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 14px;
+}
+
+.login-form__footer a {
+  color: #3498db;
+  text-decoration: none;
+}
+
+.login-form__footer a:hover {
+  text-decoration: underline;
+}
+
 /* MOBILE STYLES */
 @media (max-width: 480px) {
   .login-page {

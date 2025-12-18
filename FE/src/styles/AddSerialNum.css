@@ -122,7 +122,8 @@
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 0;
-  min-width: 600px;
+  /* UPDATED: Increased min-width to accommodate 3 new columns */
+  min-width: 900px;
 }
 
 .serial-table__head {
@@ -167,6 +168,13 @@
   color: #333;
 }
 
+/* NEW: Styling for IMSI, IMEI, Device ID columns */
+.serial-table__cell--data {
+  font-family: 'Courier New', monospace;
+  color: #555;
+  font-size: 0.9rem;
+}
+
 /* TABLE ACTIONS */
 .serial-table__actions {
   display: flex;
@@ -190,6 +198,16 @@
 
 .serial-table__btn:hover {
   opacity: 0.9;
+}
+
+.serial-table__btn--approve {
+  background-color: #007bff;
+  color: white;
+}
+
+.serial-table__btn--allocate {
+  background-color: #17a2b8;
+  color: white;
 }
 
 .serial-table__btn--delete {
@@ -257,7 +275,7 @@
     align-items: stretch;
   }
 
-  .serial-table__btn--delete {
+  .serial-table__btn {
     width: 100%;
     justify-content: center;
   }
@@ -274,11 +292,17 @@
 
   .serial-table {
     font-size: 0.85rem;
-    min-width: 550px;
+    /* UPDATED: Adjusted min-width for smaller screens */
+    min-width: 800px;
   }
 
   .serial-table__header,
   .serial-table__cell {
     padding: 0.6rem;
+  }
+  
+  /* Make data cells more compact on very small screens */
+  .serial-table__cell--data {
+    font-size: 0.8rem;
   }
 }
