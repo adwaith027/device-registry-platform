@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Serialdata,PalmtecUpiDetails
+from .models import Serialdata,Palmteccustomerdetails
 import re
 
 
@@ -19,4 +19,10 @@ class DeviceSerializer(serializers.ModelSerializer):
 class SerialNumberDetails(serializers.ModelSerializer):
     class Meta:
         model = Serialdata
-        fields = ['serialnumber','isapproved','isallocated']
+        fields = ['serialnumber','deviceid','imei','imsi','isapproved','isallocated','createdate']
+
+
+class MappingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Palmteccustomerdetails
+        fields=['upideviceserialnumber','uniqueidentifier','customercode','customername','clicenseurl','versiondetails','devicetype','company']
