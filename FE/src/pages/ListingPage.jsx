@@ -519,12 +519,12 @@ export default function ListingPage() {
                           >
                             <i className="fas fa-edit"></i> Edit
                           </button>
-                          <button
+                          {/* <button
                             className="product-table__btn product-table__btn--delete"
                             onClick={() => handleDelete(mapping.upiDeviceSerialNumber)}
                           >
                             <i className="fas fa-trash"></i> Delete
-                          </button>
+                          </button> */}
                         </div>
                       </td>
                     </tr>
