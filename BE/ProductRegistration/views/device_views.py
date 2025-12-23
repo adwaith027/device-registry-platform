@@ -6,7 +6,7 @@ from ..models import Serialdata
 from ..serializers import DeviceSerializer,SerialNumberDetails
 from django.contrib.auth import get_user_model
 from .auth_views import get_user_from_cookie
-
+import datetime
 
 
 @api_view(['GET'])
@@ -300,8 +300,61 @@ def get_device_details(request):
             fieldnames=[field[0]for field in cursor.description]
 
             result=dict(zip(fieldnames, response))
+            now = datetime.datetime.now()
+
+            current_date=datetime.datetime.strftime(now.date(),"%d %m %Y")
+            current_time_obj=now.time()
+            current_time=current_time_obj.strftime("%H:%M:%S")
+            
+            result.update({"date":current_date,"time":current_time})
 
             return Response({'status':"success",'statusCode':200,"message": "Device Details Fetch Succesfully!","data":result})
 
     except Exception as e:
         return Response({'status': 'error','message': 'Server error occurred','error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+
+
+@api_view(["POST"])
+def deactivate_serial_number(request):
+    # Validate user
+    user=get_user_from_cookie(request)
+    if not user:
+        return Response({
+            'error': 'Authentication required'
+        }, status=401)
+    
+    try:
+        if not request.data:
+            return Response({"message": "Missing input data"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        serialnumber=request.data.get('serialnumber')
+        if not serialnumber:
+            return Response({"message": "Serial number is required"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        with connection.cursor() as cursor:
+            cursor.callproc('deactivate_serial_number',[serialnumber,"",""])
+
+            cursor.execute("SELECT @_deactivate_serial_number_1")
+            out_status=cursor.fetchone()[0]
+
+            cursor.execute("SELECT @_deactivate_serial_number_2")
+            out_message=cursor.fetchone()[0]
+
+            if out_status == "success":
+                return Response({"message": out_message,"status": out_status}, status=status.HTTP_200_OK)
+            
+            elif out_status == "denied":
+                return Response({"message": out_message,"status": out_status}, status=status.HTTP_403_FORBIDDEN)
+    
+            elif out_status == "not_found":
+                return Response({"message": out_message,"status": out_status}, status=status.HTTP_404_NOT_FOUND)
+
+            else:  # out_status == 'error'
+                # General error from stored procedure
+                return Response({"message": out_message,"status": out_status}, status=status.HTTP_400_BAD_REQUEST)
+
+    
+    except Exception as e:
+        return Response({'status': 'error','message': 'Server error occurred','error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
