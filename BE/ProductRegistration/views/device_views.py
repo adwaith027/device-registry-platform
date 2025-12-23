@@ -357,4 +357,3 @@ def deactivate_serial_number(request):
     
     except Exception as e:
         return Response({'status': 'error','message': 'Server error occurred','error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    
