@@ -28,7 +28,7 @@ export default function CustomerForm({ initialData, onSubmit, onCancel, isEditMo
         if (response.data && response.data.data) {
           // Filter: approved (1) and not allocated (0 or not 2)
           const available = response.data.data.filter(item => 
-            item.isapproved === 1 && item.isallocated !== 2
+            item.isapproved === 1 && item.isallocated == 0
           )
           setAvailableSerials(available)
         }
