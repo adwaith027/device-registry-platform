@@ -116,8 +116,13 @@ def create_customer_mapping(request):
             
             cursor.execute("SELECT @_save_serial_customer_details_9")
             out_message = cursor.fetchone()[0]
-
+        
             if out_status == 'success':
+                # update serial number allocation status too
+                isallocated = 2
+                serialnumber=form_data[0]
+                cursor.callproc("update_serial_number_allocate", [serialnumber,isallocated, "", ""])
+
                 return Response({"message": out_message,"status": out_status}, status=status.HTTP_201_CREATED)
             
             elif out_status == 'duplicate':
