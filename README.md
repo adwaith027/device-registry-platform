@@ -5,7 +5,8 @@ A full-stack web application built with Django (backend) and React (frontend) fo
 It provides tools to:
 - Register new devices with their serial numbers
 - Approve devices for allocation
-- Track device allocation status (managed externally)
+- Track device allocation status with full lifecycle management
+- Deactivate devices when needed
 - Map devices to customers with comprehensive filtering and sorting
 - Manage authorized user access through JWT-based authentication
 
@@ -24,7 +25,9 @@ Designed for businesses and enterprises that need a streamlined device-tracking 
 ### Device Management
 - **Device registration** with unique serial numbers following pattern validation
 - **Device approval workflow** - approve devices before allocation
-- **Allocation tracking** - devices allocated externally, status reflected in UI
+- **Allocation tracking** - devices allocated through customer mapping
+- **Device lifecycle management** - complete status tracking (0→1→2→3)
+- **Device deactivation** - deactivate approved but unallocated devices
 - **Device details display** - IMSI, IMEI, and Device ID tracking
 - **Special device handling** - Support for devices with custom workflow
 
@@ -33,7 +36,7 @@ Designed for businesses and enterprises that need a streamlined device-tracking 
 - **Comprehensive filtering** - filter by serial number, customer code, customer name, company, device type, approval status, and date range
 - **Advanced search** - global search across multiple fields
 - **Sorting capabilities** - sort by any column (ascending/descending)
-- **Pagination** - configurable page sizes (5, 10, 25, 50 records per page)
+- **Pagination** - configurable page sizes (5, 10, 25, 50, 100 records per page)
 - **Full CRUD operations** - create, read, update mappings
 - **Auto-detection** - device type automatically detected from serial number format
 
@@ -43,6 +46,7 @@ Designed for businesses and enterprises that need a streamlined device-tracking 
 - **Real-time validation** - client-side and server-side validation
 - **Loading states** - clear feedback during API operations
 - **Error handling** - comprehensive error messages and user feedback
+- **Advanced filtering** - collapsible filter panel with multiple criteria
 
 ---
 
@@ -120,12 +124,16 @@ project-root/
 
 #### Device Management
 - Add serial numbers with pattern validation (YYYYMM{AMP|API}XXXXXXB)
-- View all registered devices in table format
+- View all registered devices in table format with filtering
 - Approve serial numbers (production team workflow)
-- Track allocation status (allocated externally, displayed in UI)
+- Allocate devices through customer mapping
+- Deactivate approved but unallocated devices
+- Track full device lifecycle (Unallocated → Fetched → Allocated → Deactivated)
 - Display device details (IMSI, IMEI, Device ID)
 - Special handling for UPI PRO devices
 - Fetch device details by serial number
+- Advanced filtering and search in serial number list
+- Pagination with multiple page size options
 
 #### Customer Mapping
 - View all device-customer mappings
@@ -147,22 +155,57 @@ project-root/
 - Loading states and error handling
 - Mobile-friendly navigation with hamburger menu
 - Professional styling and layout
+- Collapsible filter panels
 
 ### ⏳ Pending Features
 
 #### Authentication
-- ProtectedRoute enhancement to use `/verify-auth/` API endpoint
+- Enhanced ProtectedRoute using `/verify-auth/` API endpoint (optional - currently uses localStorage for simplicity)
 - User role-based access control (RBAC)
 - Permission-based feature restrictions
 
 #### Device Management
 - Delete serial numbers endpoint and functionality
-- Bulk device operations (approve/allocate multiple devices)
 
 #### Customer Mapping
 - Delete mapping endpoint and functionality
 - Bulk mapping operations
-- Export mappings
+- Export mappings to CSV/Excel
+
+---
+
+## Device Lifecycle
+
+The application tracks devices through a complete lifecycle with four distinct states:
+
+### Allocation Status Values
+
+| Status | Value | Description | Transitions From | Transitions To |
+|--------|-------|-------------|------------------|----------------|
+| **Unallocated** | 0 | Device added but not assigned | - | Fetched (1), Deactivated (3) |
+| **Fetched** | 1 | Device fetched via API for allocation | Unallocated (0) | Allocated (2) |
+| **Allocated** | 2 | Device mapped to customer | Fetched (1) | - |
+| **Deactivated** | 3 | Device removed from active pool | Unallocated (0) | - |
+
+### Lifecycle Flow
+
+```
+[New Device]
+    ↓
+[Unallocated: 0]
+    ↓
+[Approved by Production Team]
+    ↓
+├─→ [Fetched via API: 1] ─→ [Customer Mapping] ─→ [Allocated: 2]
+│
+└─→ [Deactivate] ─→ [Deactivated: 3]
+```
+
+### Key Rules
+- Only **Approved (isapproved=1)** and **Unallocated (isallocated=0)** devices can be deactivated
+- Only **Unallocated (0)** devices appear in customer mapping dropdown
+- Deactivated devices cannot be reactivated (permanent state)
+- Allocated devices cannot be deactivated
 
 ---
 
@@ -198,7 +241,7 @@ source venv/bin/activate
 
 #### b. Install Dependencies
 ```bash
-pip install -r requirements.txt (keep with .env)
+pip install -r requirements.txt
 ```
 
 **Required packages** (include in requirements.txt):
@@ -252,15 +295,51 @@ python manage.py migrate
 
 The application uses stored procedures for device and mapping operations. You'll need to create these in your database:
 
+**Device Management Procedures:**
 - `save_serial_number` - Insert new serial numbers
+  - Parameters: `serialnumber`, `category`, OUT `status`, OUT `message`
+  - Returns: `success`, `duplicate`, or `error`
+  
 - `update_serial_number_approval` - Approve serial numbers
+  - Parameters: `serialnumber`, `isapproved`, OUT `status`, OUT `message`
+  - Returns: `success`, `not_found`, or `error`
+  
 - `update_serial_number_allocate` - Update allocation status
+  - Parameters: `serialnumber`, `isallocated`, OUT `status`, OUT `message`
+  - Returns: `success`, `not_found`, or `error`
+  - Note: Sets status to 1 (Fetched) or 2 (Allocated)
+  
 - `get_single_unallocated_approved_serial` - Fetch available serial for allocation
+  - Parameters: OUT `serialnumber`, OUT `status`, OUT `message`
+  - Returns: Serial number of approved, unallocated device
+  
 - `save_upi_pro_serial_number` - Handle UPI PRO device registration
+  - Parameters: `serialnumber`, `category`, `isapproved`, `isallocated`, OUT `status`, OUT `message`
+  - Returns: `success`, `duplicate`, or `error`
+  
 - `get_device_details_by_serial` - Fetch device details
+  - Parameters: `serialnumber`
+  - Returns: Device details row (IMSI, IMEI, deviceId, etc.)
+
+- `deactivate_serial_number` - Deactivate approved but unallocated devices
+  - Parameters: `serialnumber`, OUT `status`, OUT `message`
+  - Returns: `success`, `denied` (if not eligible), `not_found`, or `error`
+  - Logic: Only devices with `isapproved=1` AND `isallocated=0` can be deactivated
+  - Sets `isallocated=3` for deactivated devices
+
+**Customer Mapping Procedures:**
 - `save_serial_customer_details` - Create device-customer mapping
+  - Parameters: `serialnumber`, `uniqueIdentifier`, `customerCode`, `customerName`, `company`, `devicetype`, `licenseUrl`, `versionDetails`, OUT `status`, OUT `message`
+  - Returns: `success`, `duplicate`, or `error`
+  - Note: Automatically updates device allocation status to 2 (Allocated)
+  
 - `update_customer_by_serial` - Update existing mapping
+  - Parameters: `serialnumber`, `customerCode`, `uniqueIdentifier`, `customerName`, `company`, `devicetype`, `cLicenseURL`, `versionDetails`, OUT `status`, OUT `message`
+  - Returns: `success`, `not_found`, or `error`
+  
 - `get_serial_customer_details` - Fetch mappings with filtering and pagination
+  - Parameters: `serialNumber`, `customerCode`, `customerName`, `company`, `deviceType`, `fromDate`, `toDate`, `approvedStatus`, `searchText`, `pageNumber`, `pageSize`, `sortingOrderIndex`, `sortingOrderDirection`, OUT `totalCount`
+  - Returns: Result set with filtered mappings
 
 #### e. Run Backend Server
 ```bash
@@ -339,10 +418,11 @@ Base URL: `http://127.0.0.1:8001/sil/`
 | `/add_serial_number/` | POST | Add new serial number | `{serialnumber}` | Success/error status |
 | `/approve_serial_number/` | PATCH | Approve a serial number | `{serialnumber}` | Success/error status |
 | `/allocate_serial_number/` | POST | Mark serial as allocated | `{serialnumber}` | Success/error status |
+| `/deactivate_serial_number/` | POST | Deactivate device | `{serialnumber}` | Success/denied/not_found/error |
 | `/getSerialNumber/` | GET | Get & allocate unallocated serial | None | Serial number + status |
 | `/get_device_details/` | GET | Get device details | Query: `?serialnumber=XXX` | Device details object |
 
-**Serial Number Format:** (change accordingly)
+**Serial Number Format:**
 - Pattern: `YYYYMM{AMP|API}XXXXXXB`
 - Example: `202505AMP123456B`
 - YYYY: Year (4 digits)
@@ -350,6 +430,16 @@ Base URL: `http://127.0.0.1:8001/sil/`
 - AMP/API: Device type
 - XXXXXX: 6-digit sequence
 - B: Suffix
+
+**Deactivate Endpoint Details:**
+- **Purpose:** Remove approved but unallocated devices from active pool
+- **Eligibility:** Only devices with `isapproved=1` AND `isallocated=0`
+- **Effect:** Sets `isallocated=3` (permanent state, cannot be reactivated)
+- **Response Codes:**
+  - `200` - Successfully deactivated
+  - `403` - Denied (device not eligible - either not approved or already allocated)
+  - `404` - Serial number not found
+  - `400` - Other errors
 
 ### Customer Mapping Endpoints
 
@@ -445,48 +535,37 @@ CORS_ALLOW_CREDENTIALS = True
 2. Serial number validated against pattern: `YYYYMM{AMP|API}XXXXXXB`
 3. Device stored in database with `isapproved=0`, `isallocated=0`
 4. **Production Team** reviews and approves devices (`isapproved=1`)
-5. **External System** allocates devices (sets `isallocated=1` via API)
-6. Web app displays allocation status (read-only in UI)
-7. Special handling for UPI PRO devices (auto-approved and allocated)
+5. Device remains in **Unallocated (0)** state until mapped or deactivated
+6. **Sales/Project Team** maps device to customer (sets `isallocated=2`)
+7. **OR** Device can be deactivated if not needed (sets `isallocated=3`)
+8. Special handling for UPI PRO devices (auto-approved and allocated)
 
 ### Customer Mapping Flow
 1. **Sales/Project Team** navigates to "Map Devices" page
 2. Clicks "Map New Device" button
 3. Modal opens with form
-4. Selects from dropdown of approved, unallocated devices
+4. Selects from dropdown of approved, unallocated devices (`isapproved=1`, `isallocated=0`)
 5. Device type auto-detected from serial number
 6. Enters customer details (code, name, company, UID)
 7. Enters license URL and version details
 8. Form validates and submits to backend
-9. Backend creates mapping in database
+9. Backend creates mapping AND updates device `isallocated=2`
 10. Table refreshes to show new mapping
 11. Team can edit/update mappings as needed
 12. Advanced filtering and search available for finding specific mappings
 
----
-
-**Note:** Role-based access control (RBAC) is planned but not yet enforced in the UI.
-
----
-
-## Development Guidelines
-
-### Adding New Features
-
-1. **Backend (Django):**
-   - Create/update models in `models.py`
-   - Add serializers in `serializers.py`
-   - Implement views in appropriate `views/` file
-   - Register URLs in `urls.py`
-   - Create database migrations: `python manage.py makemigrations`
-   - Run migrations: `python manage.py migrate`
-
-2. **Frontend (React):**
-   - Create components in `src/components/`
-   - Create pages in `src/pages/`
-   - Add routes in `main.jsx`
-   - Use axios configured in `axiosConfig.js` for API calls
-   - Follow existing CSS patterns for styling
+### Device Deactivation Flow
+1. **Production/Admin Team** views devices in "Add Serial Number" page
+2. Identifies device that needs deactivation (faulty, obsolete, etc.)
+3. Device must be **Approved (1)** and **Unallocated (0)** to be eligible
+4. Clicks "Deactivate" button
+5. Confirms deactivation in popup
+6. Backend validates eligibility:
+   - If `isapproved=1` AND `isallocated=0`: Proceed
+   - Otherwise: Return 403 Forbidden
+7. Backend sets `isallocated=3` (permanent deactivation)
+8. Deactivated devices no longer appear in customer mapping dropdowns
+9. Status reflected in table with appropriate styling
 
 ---
 
@@ -517,6 +596,12 @@ pip install -r requirements.txt
 - **Solution:** Ensure all required stored procedures are created in database
 - Check stored procedure parameters match view function calls
 - Review database logs for SQL errors
+- Verify `deactivate_serial_number` procedure is created
+
+**Issue:** Deactivate operation denied (403)
+- **Solution:** Verify device is both approved (`isapproved=1`) AND unallocated (`isallocated=0`)
+- Check device status in database
+- Allocated or unapproved devices cannot be deactivated
 
 #### Frontend Issues
 
@@ -539,6 +624,11 @@ pip install -r requirements.txt
 - **Solution:** Check browser console for JavaScript errors
 - Verify all imports are correct
 - Ensure React Router is configured properly
+
+**Issue:** Filters not working
+- **Solution:** Check if filters are applied by clicking "Apply Filters" button
+- Verify date formats are YYYY-MM-DD
+- Check console for API errors
 
 ---
 
