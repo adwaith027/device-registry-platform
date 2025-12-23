@@ -232,6 +232,168 @@
   cursor: not-allowed;
 }
 
+/* Add to AddSerialNum.css */
+
+.serial-table__btn--disabled {
+  background-color: #ccc;
+  color: #666;
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.serial-table__btn--disabled:hover {
+  background-color: #ccc;
+}
+
+.serial-filters {
+  margin: 20px 0;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.serial-filters__row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.serial-filters__field {
+  display: flex;
+  flex-direction: column;
+}
+
+.serial-filters__label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 5px;
+}
+
+.serial-filters__input,
+.serial-filters__select {
+  padding: 8px 12px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.serial-filters__input:focus,
+.serial-filters__select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
+}
+
+.serial-filters__reset {
+  margin-top: auto;
+  padding: 8px 16px;
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.serial-filters__reset:hover {
+  background-color: #5a6268;
+}
+
+.serial-filters__info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  color: #495057;
+  padding-top: 10px;
+  border-top: 1px solid #dee2e6;
+}
+
+.serial-filters__active {
+  color: #007bff;
+  font-weight: 600;
+}
+
+/* Pagination Section */
+.serial-pagination {
+  margin-top: 20px;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.serial-pagination__info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-size: 14px;
+  color: #495057;
+}
+
+.serial-pagination__select {
+  padding: 6px 10px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.serial-pagination__controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.serial-pagination__btn {
+  padding: 6px 12px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.serial-pagination__btn:hover:not(:disabled) {
+  background-color: #0056b3;
+}
+
+.serial-pagination__btn:disabled {
+  background-color: #e9ecef;
+  color: #6c757d;
+  cursor: not-allowed;
+}
+
+.serial-pagination__pages {
+  padding: 0 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #495057;
+}
+
+/* Disabled button style */
+.serial-table__btn--disabled {
+  background-color: #ccc;
+  color: #666;
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.serial-table__btn--disabled:hover {
+  background-color: #ccc;
+}
+
+
 /* MOBILE STYLES */
 @media (max-width: 768px) {
   .serial-page {
@@ -276,6 +438,18 @@
   }
 
   .serial-table__btn {
+    width: 100%;
+    justify-content: center;
+  }
+  .serial-filters__row {
+    grid-template-columns: 1fr;
+  }
+  
+  .serial-pagination {
+    flex-direction: column;
+  }
+  
+  .serial-pagination__controls {
     width: 100%;
     justify-content: center;
   }
