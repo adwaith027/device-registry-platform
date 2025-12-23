@@ -18,6 +18,7 @@ urlpatterns = [
     path('allocate_serial_number/', device_views.allocate_serial_number, name="allocate_serial_number"),
     path('getSerialNumber/', device_views.get_unallocated_sl_no, name="get_unallocated_sl_no"),
     path('get_device_details/', device_views.get_device_details, name="get_device_details"),
+    path('deactivate_serial_number/', device_views.deactivate_serial_number, name="deactivate_serial_number"),
     
     # handle device mappings
     path('get_customer_mappings/', mapping_views.get_customer_mappings, name="get_customer_mappings"),
